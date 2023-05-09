@@ -8,6 +8,7 @@ import com.javarush.jira.login.internal.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -97,7 +98,7 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = USER_MAIL)
+    @WithUserDetails(value = USER_MAIL, setupBefore = TestExecutionEvent.TEST_EXECUTION)
     void update() throws Exception {
         User dbUserBefore = repository.getExistedByEmail(USER_MAIL);
         UserTo updatedTo = mapper.toTo(getUpdated());

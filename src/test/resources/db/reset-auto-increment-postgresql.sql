@@ -1,0 +1,2 @@
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
+ALTER SEQUENCE reference_id_seq RESTART WITH 1;
