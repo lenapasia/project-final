@@ -1,3 +1,4 @@
+DELETE from activity;
 DELETE FROM profile;
 DELETE FROM user_role;
 DELETE FROM user_belong;
