@@ -45,3 +45,11 @@ CREATE DATABASE jira;
 ```
 [How to delete a database in pgadmin](https://stackoverflow.com/a/64889251)
 <br>Альтернативный вариант решения проблемы: вручную обновить в базе данных checksum'ы "поломашвихся" changeset'ов. Тогда базу данных пересоздавать будет не нужно и все данные в ней сохранятся.
+
+---
+
+### Задача 8
+
+_Добавить автоматический подсчет времени сколько задача находилась в работе и тестировании._
+
+[Period and Duration in Java](https://www.baeldung.com/java-period-duration)
