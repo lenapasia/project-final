@@ -271,3 +271,18 @@ INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, st
 
 DELETE FROM REFERENCE WHERE CODE = 'vk';
 DELETE FROM CONTACT WHERE CODE = 'vk';
+
+--changeset lenapasia:add task activity for calculating working and testing time
+INSERT INTO ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
+VALUES (1, 1, 4, '2023-05-10 09:05:00.000000', 'in progress' ),
+       (2, 1, 4, '2023-05-10 11:30:00.000000', 'ready' ),
+       (3, 1, 4, '2023-05-10 11:55:05.000000', 'done' );
+
+ALTER TABLE ACTIVITY
+    DROP CONSTRAINT FK_ACTIVITY_USERS;
+
+ALTER TABLE ACTIVITY
+    ADD CONSTRAINT FK_ACTIVITY_USERS
+        FOREIGN KEY (AUTHOR_ID)
+            REFERENCES USERS (ID)
+            ON DELETE CASCADE;
