@@ -1,13 +1,13 @@
-Заметки, помогшие выполнить задачи.
+Заметки для помощи в выполнеии задач.
 
 ----
 
 ### Задача 3
 _Вынести чувствительную информацию (логин, пароль БД, идентификаторы для OAuth регистрации/авторизации, настройки почты) в отдельный проперти файл. Значения этих проперти должны считываться при старте сервера из переменных окружения машины._
 
-[https://www.baeldung.com/properties-with-spring](Properties with Spring and Spring Boot) -> 4.7. Importing Additional Configuration Files
+[Properties with Spring and Spring Boot](https://www.baeldung.com/properties-with-spring) -> 4.7. Importing Additional Configuration Files
 
-[https://www.baeldung.com/spring-boot-properties-env-variables](Using Environment Variables in Spring Boot’s Properties Files) -> 2. Use Environment Variables in the application.properties File
+[Using Environment Variables in Spring Boot’s Properties Files](https://www.baeldung.com/spring-boot-properties-env-variables) -> 2. Use Environment Variables in the application.properties File
 
 **Последствия выполнения задачи:**<br>
 Для запуска локально в IntelliJ IDEA необходимо добавить переменные окружения.
@@ -44,7 +44,7 @@ DROP DATABASE IF EXISTS jira;
 CREATE DATABASE jira;
 ```
 [How to delete a database in pgadmin](https://stackoverflow.com/a/64889251)
-<br>Альтернативный вариант решения проблемы: вручную обновить в базе данных checksum'ы "поломашвихся" changeset'ов. Тогда базу данных пересоздавать будет не нужно и все данные в ней сохранятся.
+<br>Альтернативный вариант решения проблемы: вручную обновить в базе данных checksum'ы "поломашвихся" changeset'ов (таблица "databasechangelog"). Тогда базу данных пересоздавать будет не нужно и все данные в ней сохранятся.
 
 ---
 
@@ -53,3 +53,49 @@ CREATE DATABASE jira;
 _Добавить автоматический подсчет времени сколько задача находилась в работе и тестировании._
 
 [Period and Duration in Java](https://www.baeldung.com/java-period-duration)
+
+---
+
+### Задача 9
+
+_Написать Dockerfile для основного сервера_
+
+Порядок действий для выполнения задачи
+
+##### 1. Локально запустить jar-файл
+Проверить, что jar файл нашего Spring-приложения локально запускается и работает без ошибок:  
+а) установить переменные окружения, необходимые для работы нашего Spring-приложения  
+б) запустить jar нашего Spring-приложения с активным профилем "prod"  
+Если всё работает без ошибок, то далее настраиваем Dockerfile.
+
+##### 2. Написать Dockerfile:
+В рамках этой задачи, только создаем Dockerfile, но не запускаем его (запуск будем делать ниже).
+
+1) Создание и запуск Dockerfile для Spring Boot приложения:
+[Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker/)
+
+2) При запуске docker образра необходимо указать пременные окружения, для этого можно использовать несколько подходов:
+- передать в качестве параметров команды run: [Set environment variables (-e, --env, --env-file)](https://docs.docker.com/engine/reference/commandline/run/#env)
+- или задать переменные окружения непосредственно в Dockerfile'е: [Docker совет №21: Использование переменных окружения](https://ealebed.github.io/posts/2018/docker-совет-21-использование-переменных-окружения/)
+
+3) Установить активный профиль Spring приложению в Docker'е: [Starting Spring Boot Application in Docker With Profile](https://www.baeldung.com/spring-boot-docker-start-with-profile)
+
+##### 3. Измененить адрес подключения к базе данных
+
+Для того, чтобы запустить приложение в Docker'е необходимо изменить настройки подключения к базе данных. Потому что из Docker-образа по адресу "localhost" база будет не доступна. Поэтому надо найти по какому адресу будет доступна база данных Spring-приложению, запущенному в Docker'е.
+
+Находим адрес для подключения к БД:
+[How to connect locally hosted MySQL database with the docker container](https://stackoverflow.com/a/44544841)
+
+Заменяем адрес подключения к базе данных в application.yaml и пересобираем jar.
+
+##### 4. Запустить Docker-контейнер
+
+1) Создаем образ (docker image):
+>docker build -t ru.javarush/jira .
+
+2) Запускаем контейнер на основе образа (создаем и запускаем docker container на основе docker image):
+>docker run --name javarush-jira -p 8080:8080 --env-file docker-env.list ru.javarush/jira
+
+_Примечание_  
+После запуска приложения в Docker-контейнере вы можете столкнутся (но не обязательно) с ошибкой: само приложение запускается без ошибок, но при любом обращении к frontend'у возникают ошибки. Это связано с тем, что не до конца всё настроено (а вот что именно - предлагаю разобраться самостоятельно; подсказка - обратите внимание на файловую структуру нашего Spring-приложения).
