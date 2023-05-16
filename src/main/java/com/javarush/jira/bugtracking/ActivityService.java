@@ -43,7 +43,7 @@ public class ActivityService {
     }
 
     private Optional<Activity> findByStatus(List<Activity> activities, TaskStatus status) {
-        return Optional.ofNullable(activities.stream().filter(activity -> status.getCode().equalsIgnoreCase(activity.getStatusCode()))
-                .findAny().orElse(null));
+        return activities.stream().filter(activity -> status.getCode().equalsIgnoreCase(activity.getStatusCode()))
+                .findAny();
     }
 }
