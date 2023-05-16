@@ -26,7 +26,6 @@ public abstract class AbstractTest {
                 ? "db/reset-auto-increment-postgresql.sql"
                 : "db/reset-auto-increment-h2.sql";
 
-
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScripts(
                 new ClassPathResource("db/clear-tables.sql"),
