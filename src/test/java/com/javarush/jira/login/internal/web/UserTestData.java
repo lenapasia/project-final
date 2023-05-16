@@ -8,7 +8,7 @@ import com.javarush.jira.login.UserTo;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
-            User.class, "startpoint", "endpoint", "password");
+            User.class, "startpoint", "endpoint", "password", "subscribedTasks");
 
     public static final MatcherFactory.Matcher<UserTo> TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(UserTo.class);
 

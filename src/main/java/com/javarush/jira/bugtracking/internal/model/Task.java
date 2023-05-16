@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.javarush.jira.common.model.TitleEntity;
 import com.javarush.jira.common.util.validation.Code;
 import com.javarush.jira.common.util.validation.Description;
+import com.javarush.jira.login.User;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,4 +78,23 @@ public class Task extends TitleEntity {
     @JoinColumn(name = "parent_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Task parent;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "task_subscription",
+            joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> subscribedUsers = new HashSet<>();
+
+    public void addSubscribedUser(User subscribedUser) {
+        this.subscribedUsers.add(subscribedUser);
+        subscribedUser.getSubscribedTasks().add(this);
+    }
+
+    public void removeSubscribedUser(long userId) {
+        final User subscribedUser = this.subscribedUsers.stream().filter(t -> t.getId() == userId).findFirst().orElse(null);
+        if (subscribedUser != null) {
+            this.subscribedUsers.remove(subscribedUser);
+            subscribedUser.getSubscribedTasks().remove(this);
+        }
+    }
 }

@@ -286,3 +286,15 @@ ALTER TABLE ACTIVITY
         FOREIGN KEY (AUTHOR_ID)
             REFERENCES USERS (ID)
             ON DELETE CASCADE;
+
+--changeset lenapasia:add_task_subscription
+create table TASK_SUBSCRIPTION
+(
+    TASK_ID     bigint      not null,
+    USER_ID     bigint      not null,
+    constraint FK_TASK_SUBSCRIPTION_TO_TASK foreign key (TASK_ID) references TASK (ID) on delete cascade on update cascade,
+    constraint FK_TASK_SUBSCRIPTION_TO_USER foreign key (USER_ID) references USERS (ID) on delete cascade on update cascade
+);
+create unique index UK_TASK_SUBSCRIPTION on TASK_SUBSCRIPTION (TASK_ID, USER_ID);
+create index IX_TASK_SUBSCRIPTION_USER_ID on TASK_SUBSCRIPTION (USER_ID);
+create index IX_TASK_SUBSCRIPTION_TASK_ID on TASK_SUBSCRIPTION (TASK_ID);
