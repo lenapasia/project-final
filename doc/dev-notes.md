@@ -58,6 +58,7 @@ _Добавить возможность подписываться на зад�
 - Как можно подписаться на задачу?  
   Создать отдельную таблицу task_subscription. В эту таблицу сохранять подписку пользователя на задачу. Отношения в таблице many-to-many: users to tasks.
 
+[Many-To-Many Relationship in JPA](https://www.baeldung.com/jpa-many-to-many)  
 [JPA Many to Many example with Hibernate in Spring Boot](https://www.bezkoder.com/jpa-many-to-many/)
 
 ---
