@@ -94,3 +94,6 @@ insert into ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE ) VALUES
 
     --task with not finished working time
     (4, 1, 3, '2023-05-10 15:00:00.000000', 'in progress' );
+
+--============ Task subscriptions =================
+insert into task_subscription (task_id, user_id) VALUES (3, 1);
