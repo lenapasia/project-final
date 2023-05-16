@@ -1,41 +1,37 @@
 package com.javarush.jira.bugtracking;
 
 import com.javarush.jira.bugtracking.internal.model.Activity;
-import com.javarush.jira.bugtracking.internal.model.Task;
 import com.javarush.jira.bugtracking.internal.model.TaskStatus;
+import com.javarush.jira.bugtracking.internal.repository.ActivityRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ActivityService {
 
-    public Duration calculateWorkingTime(Task task) {
-        return calculateTime(task, TaskStatus.IN_PROGRESS, TaskStatus.READY);
+    private final ActivityRepository repository;
+
+    public Duration calculateWorkingTime(long taskId) {
+        return calculateTime(taskId, TaskStatus.IN_PROGRESS, TaskStatus.READY);
     }
 
-    public Duration calculateTestingTime(Task task) {
-        return calculateTime(task, TaskStatus.READY, TaskStatus.DONE);
+    public Duration calculateTestingTime(long taskId) {
+        return calculateTime(taskId, TaskStatus.READY, TaskStatus.DONE);
     }
 
-    private Duration calculateTime(Task task, TaskStatus startStatus, TaskStatus endStatus) {
-        final List<Activity> activities = task.getActivities();
+    private Duration calculateTime(long taskId, TaskStatus startStatus, TaskStatus endStatus) {
+        final List<Activity> activities = repository.getByStatusCodeInAndTaskId(
+                Set.of(startStatus.getCode(), endStatus.getCode()), taskId);
 
-        final Map<TaskStatus, Activity> statusToActivity = new HashMap<>();
-        for (Activity eachActivity : activities) {
-            final TaskStatus status = TaskStatus.valueOfCode(eachActivity.getStatusCode());
-            if (status != null) {
-                statusToActivity.put(status, eachActivity);
-            }
-        }
-
-        final Optional<Activity> startActivity = Optional.ofNullable(statusToActivity.get(startStatus));
-        final Optional<Activity> endActivity = Optional.ofNullable(statusToActivity.get(endStatus));
+        final Optional<Activity> startActivity = findByStatus(activities, startStatus);
+        final Optional<Activity> endActivity = findByStatus(activities, endStatus);
 
         if (startActivity.isPresent() && endActivity.isPresent()) {
             final LocalDateTime start = startActivity.get().getUpdated();
@@ -44,5 +40,10 @@ public class ActivityService {
             return Duration.between(start, end);
         }
         return null;
+    }
+
+    private Optional<Activity> findByStatus(List<Activity> activities, TaskStatus status) {
+        return Optional.ofNullable(activities.stream().filter(activity -> status.getCode().equalsIgnoreCase(activity.getStatusCode()))
+                .findAny().orElse(null));
     }
 }

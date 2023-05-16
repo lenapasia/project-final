@@ -27,4 +27,8 @@ public enum TaskStatus {
     public static TaskStatus valueOfCode(String code) {
         return CODE_TO_STATUS.get(code);
     }
+
+    public String getCode() {
+        return code;
+    }
 }

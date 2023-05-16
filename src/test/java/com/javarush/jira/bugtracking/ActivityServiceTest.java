@@ -24,8 +24,7 @@ class ActivityServiceTest extends AbstractTest {
     @Test
     @Transactional
     void calculateWorkingTime() {
-        final Task task = taskRepository.getExisted(TASK_ID);
-        final Duration actualWorkingTime = service.calculateWorkingTime(task);
+        final Duration actualWorkingTime = service.calculateWorkingTime(TASK_ID);
         final Duration expected = Duration.ofMinutes(2*60 + 25);
         assertThat(actualWorkingTime).isEqualTo(expected);
     }
@@ -33,8 +32,7 @@ class ActivityServiceTest extends AbstractTest {
     @Test
     @Transactional
     void calculateTestingTime() {
-        final Task task = taskRepository.getExisted(TASK_ID);
-        final Duration actualTestingTime = service.calculateTestingTime(task);
+        final Duration actualTestingTime = service.calculateTestingTime(TASK_ID);
         final Duration expected = Duration.parse("PT25M5S");
         assertThat(actualTestingTime).isEqualTo(expected);
     }
@@ -42,19 +40,20 @@ class ActivityServiceTest extends AbstractTest {
     @Test
     @Transactional
     void calculateWhenTaskHasNoActivities() {
-        final Task task = taskRepository.getExisted(TaskTestData.TASK_ID);
-        final Duration actualWorkingTime = service.calculateWorkingTime(task);
+        final long taskIdWithoutActivities = TaskTestData.TASK_ID;
+        final Duration actualWorkingTime = service.calculateWorkingTime(taskIdWithoutActivities);
         assertThat(actualWorkingTime).isNull();
-        final Duration actualTestingTime = service.calculateTestingTime(task);
+        final Duration actualTestingTime = service.calculateTestingTime(taskIdWithoutActivities);
         assertThat(actualTestingTime).isNull();
     }
 
     @Test
     @Transactional
     void calculateWhenTaskHasOnlyStartingActivity() {
-        final Task task = taskRepository.getExisted(3);
+        final long taskIdWithOnlyStartingActivity = 3;
+        final Task task = taskRepository.getExisted(taskIdWithOnlyStartingActivity);
         assertThat(task.getActivities()).isNotNull().isNotEmpty();
-        final Duration actualWorkingTime = service.calculateWorkingTime(task);
+        final Duration actualWorkingTime = service.calculateWorkingTime(task.id());
         assertThat(actualWorkingTime).isNull();
     }
 
