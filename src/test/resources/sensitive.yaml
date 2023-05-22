@@ -2,6 +2,7 @@ spring:
   datasource:
     username: jira
     password: JiraRush
+    url: jdbc:postgresql://localhost:5432/jira
 
   security:
     oauth2:

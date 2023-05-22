@@ -2,6 +2,7 @@ spring:
   datasource:
     username: ${JR_DB_USERNAME}
     password: ${JR_DB_PASSWORD}
+    url: ${JR_DB_URL}
 
   security:
     oauth2:
