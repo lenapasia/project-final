@@ -9,7 +9,7 @@ app:
 
 spring:
   config:
-    import: classpath:sensitive.properties
+    import: classpath:sensitive.yaml
 
   jpa:
     show-sql: true
