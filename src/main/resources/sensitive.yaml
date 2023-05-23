@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    username: ${JR_DB_USERNAME}
+    password: ${JR_DB_PASSWORD}
+    url: ${JR_DB_URL}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${JR_GITHUB_CLIENT_ID}
+            client-secret: ${JR_GITHUB_CLIENT_SECRET}
+
+          google:
+            client-id: ${JR_GOOGLE_CLIENT_ID}
+            client-secret: ${JR_GOOGLE_CLIENT_SECRET}
+
+          gitlab:
+            client-id: ${JR_GITLAB_CLIENT_ID}
+            client-secret: ${JR_GITLAB_CLIENT_SECRET}
+
+  mail:
+    host: ${JR_MAIL_HOST}
+    port: ${JR_MAIL_PORT}
+    username: ${JR_MAIL_USERNAME}
+    password: ${JR_MAIL_PASSWORD}

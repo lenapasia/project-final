@@ -90,7 +90,7 @@ create table CONTACT
 (
     ID    bigint       not null,
     CODE  varchar(32)  not null,
-    VALUE varchar(256) not null,
+    "value" varchar(256) not null,
     primary key (ID, CODE),
     constraint FK_CONTACT_PROFILE foreign key (ID) references PROFILE (ID) on delete cascade
 );
@@ -243,7 +243,7 @@ insert into PROFILE (ID, LAST_FAILED_LOGIN, LAST_LOGIN, MAIL_NOTIFICATIONS)
 values (1, null, null, 49),
        (2, null, null, 14);
 
-insert into CONTACT (ID, CODE, VALUE)
+insert into CONTACT (ID, CODE, "value")
 values (1, 'skype', 'userSkype'),
        (1, 'mobile', '+01234567890'),
        (1, 'website', 'user.com'),
@@ -266,3 +266,35 @@ INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, st
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (4, 3, 2, 2, 'admin', null, null);
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (5, 4, 2, 2, 'admin', null, null);
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (6, 5, 2, 2, 'admin', null, null);
+
+--changeset lenapasia:remove_vk
+
+DELETE FROM REFERENCE WHERE CODE = 'vk';
+DELETE FROM CONTACT WHERE CODE = 'vk';
+
+--changeset lenapasia:add task activity for calculating working and testing time
+INSERT INTO ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE )
+VALUES (1, 1, 4, '2023-05-10 09:05:00.000000', 'in progress' ),
+       (2, 1, 4, '2023-05-10 11:30:00.000000', 'ready' ),
+       (3, 1, 4, '2023-05-10 11:55:05.000000', 'done' );
+
+ALTER TABLE ACTIVITY
+    DROP CONSTRAINT FK_ACTIVITY_USERS;
+
+ALTER TABLE ACTIVITY
+    ADD CONSTRAINT FK_ACTIVITY_USERS
+        FOREIGN KEY (AUTHOR_ID)
+            REFERENCES USERS (ID)
+            ON DELETE CASCADE;
+
+--changeset lenapasia:add_task_subscription
+create table TASK_SUBSCRIPTION
+(
+    TASK_ID     bigint      not null,
+    USER_ID     bigint      not null,
+    constraint FK_TASK_SUBSCRIPTION_TO_TASK foreign key (TASK_ID) references TASK (ID) on delete cascade on update cascade,
+    constraint FK_TASK_SUBSCRIPTION_TO_USER foreign key (USER_ID) references USERS (ID) on delete cascade on update cascade
+);
+create unique index UK_TASK_SUBSCRIPTION on TASK_SUBSCRIPTION (TASK_ID, USER_ID);
+create index IX_TASK_SUBSCRIPTION_USER_ID on TASK_SUBSCRIPTION (USER_ID);
+create index IX_TASK_SUBSCRIPTION_TASK_ID on TASK_SUBSCRIPTION (TASK_ID);

@@ -1,17 +1,10 @@
-DELETE FROM profile;
-DELETE FROM user_role;
-DELETE FROM user_belong;
-DELETE FROM users;
-DELETE FROM task;
-DELETE FROM sprint;
-DELETE FROM project;
-ALTER SEQUENCE users_id_seq RESTART WITH 1;
-
+--============ Users =================
 insert into users (EMAIL, PASSWORD, FIRST_NAME, LAST_NAME, DISPLAY_NAME)
 values ('user@gmail.com', '{noop}password', 'userFirstName', 'userLastName', 'userDisplayName'),
        ('admin@gmail.com', '{noop}admin', 'adminFirstName', 'adminLastName', 'adminDisplayName'),
        ('guest@gmail.com', '{noop}guest', 'guestFirstName', 'guestLastName', 'guestDisplayName');
 
+--============ User Roles =================
 -- 0 DEV
 -- 1 ADMIN
 insert into USER_ROLE (ROLE, USER_ID)
@@ -19,8 +12,6 @@ values (0, 1),
        (1, 2),
        (0, 2);
 
-DELETE FROM reference;
-ALTER SEQUENCE reference_id_seq RESTART WITH 1;
 --============ References =================
 insert into reference (CODE, TITLE, REF_TYPE)
 -- TASK
@@ -51,7 +42,6 @@ values ('task', 'Task', 2),
        ('mobile', 'Mobile', 0),
        ('phone', 'Phone', 0),
        ('website', 'Website', 0),
-       ('vk', 'VK', 0),
        ('linkedin', 'LinkedIn', 0),
        ('github', 'GitHub', 0),
 -- PRIORITY
@@ -74,14 +64,12 @@ insert into profile (ID, LAST_FAILED_LOGIN, LAST_LOGIN, MAIL_NOTIFICATIONS)
 values (1, null, null, 49),
        (2, null, null, 14);
 
-DELETE FROM contact;
-insert into contact (ID, CODE, VALUE)
+insert into contact (ID, CODE, "value")
 values (1, 'skype', 'userSkype'),
        (1, 'mobile', '+01234567890'),
        (1, 'website', 'user.com'),
        (2, 'github', 'adminGitHub'),
-       (2, 'tg', 'adminTg'),
-       (2, 'vk', 'adminVk');
+       (2, 'tg', 'adminTg');
 
 -- bugtracking
 INSERT INTO project (id, code, title, description, type_code, startpoint, endpoint, parent_id) VALUES (2, 'task tracker', 'PROJECT-1', 'test project', 'task tracker', null, null, null);
@@ -98,3 +86,14 @@ INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, st
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (5, 4, 2, 2, 'admin', null, null);
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (6, 5, 2, 2, 'admin', null, null);
 
+insert into ACTIVITY ( ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE ) VALUES
+    --task with completed working and testing time
+    (1, 1, 4, '2023-05-10 09:05:00.000000', 'in progress' ),
+    (2, 1, 4, '2023-05-10 11:30:00.000000', 'ready' ),
+    (3, 1, 4, '2023-05-10 11:55:05.000000', 'done' ),
+
+    --task with not finished working time
+    (4, 1, 3, '2023-05-10 15:00:00.000000', 'in progress' );
+
+--============ Task subscriptions =================
+insert into task_subscription (task_id, user_id) VALUES (3, 1);
